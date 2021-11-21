@@ -27,6 +27,8 @@ public class PortalController : MonoBehaviour
 
     void Update()
     {
+        
+
         if (hasPortalSpawned)
         {
             if (Input.GetMouseButtonDown(0))
@@ -45,6 +47,7 @@ public class PortalController : MonoBehaviour
                     spawningPortal.Play();
                     firstClick = false;
                     centerPoint = GetMousePosition();
+                    transform.position = GetMousePointInWorld();
                 }
 
                 Vector2 currentMousePos = GetMousePosition();
@@ -87,6 +90,13 @@ public class PortalController : MonoBehaviour
     {
         firstClick = true;
         spawningPortal.Stop();
+    }
+
+    private Vector3 GetMousePointInWorld()
+    {
+        Vector3 rawMousePosition = Input.mousePosition;
+        rawMousePosition.z = 22f;
+        return Camera.main.ScreenToWorldPoint(rawMousePosition);
     }
 
     private Vector2 GetMousePosition()
