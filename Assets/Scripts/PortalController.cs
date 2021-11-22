@@ -7,7 +7,7 @@ public class PortalController : MonoBehaviour
 {
     public VisualEffect spawningPortal;
     public VisualEffect staticPortal;
-    public Light light;
+    public Light lightPortal;
     public float lightIntensity;
 
     public float portalRadius;
@@ -131,14 +131,14 @@ public class PortalController : MonoBehaviour
         }
 
         float elapsedTime = 0;
-        float initialIntensity = light.intensity;
+        float initialIntensity = lightPortal.intensity;
         while (elapsedTime < duration)
         {
-            light.intensity = Mathf.Lerp(initialIntensity, targetIntensity, elapsedTime / duration);
+            lightPortal.intensity = Mathf.Lerp(initialIntensity, targetIntensity, elapsedTime / duration);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        light.intensity = targetIntensity;
+        lightPortal.intensity = targetIntensity;
     }
 }

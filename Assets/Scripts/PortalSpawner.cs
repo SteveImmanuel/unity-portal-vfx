@@ -9,11 +9,15 @@ public class PortalSpawner : MonoBehaviour
     public float majorRadius;
     public float spawnDuration;
     public int spawnRate;
+    public float lightIntensity;
     public AnimationCurve spawnCurve;
     public VisualEffect spawningPortal;
     public VisualEffect staticPortal;
+    public Light lightPortal;
+
 
     private bool hasPlayed;
+    private Coroutine spawnCoroutine;
 
     private void Awake()
     {
@@ -33,16 +37,17 @@ public class PortalSpawner : MonoBehaviour
             else
             {
                 hasPlayed = true;
-                StartCoroutine(SpawnSequence());
+                spawnCoroutine = StartCoroutine(SpawnSequence());
             }
         }
     }
 
     private void StopSpawnSequence()
     {
+        StartCoroutine(TurnOffLight(1f));
         spawningPortal.Stop();
         staticPortal.Stop();
-        StopAllCoroutines();
+        StopCoroutine(spawnCoroutine);
     }
 
     private IEnumerator SpawnSequence()
@@ -63,11 +68,13 @@ public class PortalSpawner : MonoBehaviour
             float currentMajorRadius = Mathf.Clamp(majorRadius * spawnCurve.Evaluate(progress), .2f * majorRadius, majorRadius);
             float currentMinorRadius = Random.Range(0, .03f);
             int currentSpawnRate = (int)Mathf.Clamp(spawnRate * spawnCurve.Evaluate(progress), 500, .3f * spawnRate) + Random.Range(-250, 250);
+            float currentLightIntensity = lightIntensity * spawnCurve.Evaluate(progress);
 
             spawningPortal.SetFloat("ArcSequencer", arcSequencer);
             spawningPortal.SetFloat("MajorRadius", currentMajorRadius);
             spawningPortal.SetFloat("MinorRadius", currentMinorRadius);
             spawningPortal.SetInt("SpawnRate", currentSpawnRate);
+            lightPortal.intensity = currentLightIntensity;
 
             if (progress > .5f)
             {
@@ -85,5 +92,21 @@ public class PortalSpawner : MonoBehaviour
         staticPortal.SetInt("SpawnRate", spawnRate);
         spawningPortal.Stop();
         yield return null;
+    }
+
+    private IEnumerator TurnOffLight(float duration)
+    {
+        float initialIntensity = lightPortal.intensity;
+        float targetIntensity = 0;
+
+        float elapsedTime = 0;
+        while (elapsedTime < duration)
+        {
+            lightPortal.intensity = Mathf.Lerp(initialIntensity, targetIntensity, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        lightPortal.intensity = targetIntensity;
     }
 }
