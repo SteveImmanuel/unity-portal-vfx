@@ -7,8 +7,12 @@ public class PortalController : MonoBehaviour
 {
     public VisualEffect spawningPortal;
     public VisualEffect staticPortal;
+    public Light light;
+    public float lightIntensity;
+
     public float portalRadius;
     public float minAngularSpeed;
+
 
     private bool hasPortalSpawned;
     private bool firstClick;
@@ -34,6 +38,7 @@ public class PortalController : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 hasPortalSpawned = false;
+                StartCoroutine(FlipLight(false, .8f));
                 staticPortal.Stop();
             }
         }
@@ -46,11 +51,11 @@ public class PortalController : MonoBehaviour
                 {
                     spawningPortal.Play();
                     firstClick = false;
-                    centerPoint = GetMousePosition();
-                    transform.position = GetMousePointInWorld();
+                    centerPoint = GetMousePositionInScreen();
+                    transform.position = GetMousePositionInWorld();
                 }
 
-                Vector2 currentMousePos = GetMousePosition();
+                Vector2 currentMousePos = GetMousePositionInScreen();
                 Vector2 direction = (currentMousePos - centerPoint);
                 float magnitude = direction.magnitude;
                 float radian = Mathf.Acos(Vector2.Dot(direction / magnitude, rightVector));
@@ -75,6 +80,7 @@ public class PortalController : MonoBehaviour
                 {
                     staticPortal.SetFloat("MajorRadius", portalRadius);
                     staticPortal.Play();
+                    StartCoroutine(FlipLight(true, .5f));
                     hasPortalSpawned = true;
                     StopSpawnSequence();
                 }
@@ -92,14 +98,14 @@ public class PortalController : MonoBehaviour
         spawningPortal.Stop();
     }
 
-    private Vector3 GetMousePointInWorld()
+    private Vector3 GetMousePositionInWorld()
     {
         Vector3 rawMousePosition = Input.mousePosition;
         rawMousePosition.z = 22f;
         return Camera.main.ScreenToWorldPoint(rawMousePosition);
     }
 
-    private Vector2 GetMousePosition()
+    private Vector2 GetMousePositionInScreen()
     {
         return new Vector2(Input.mousePosition.x, Input.mousePosition.y);
     }
@@ -113,5 +119,26 @@ public class PortalController : MonoBehaviour
             normalizedRadian += 1;
         }
         return 1 - normalizedRadian;
+    }
+
+    private IEnumerator FlipLight(bool on, float duration)
+    {
+        float targetIntensity = lightIntensity;
+
+        if (!on)
+        {
+            targetIntensity = 0;
+        }
+
+        float elapsedTime = 0;
+        float initialIntensity = light.intensity;
+        while (elapsedTime < duration)
+        {
+            light.intensity = Mathf.Lerp(initialIntensity, targetIntensity, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        light.intensity = targetIntensity;
     }
 }
