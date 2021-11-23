@@ -722,7 +722,6 @@ MonoBehaviour:
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 114350483966674976}
   m_Children:
-  - {fileID: 8926484042661614669}
   - {fileID: 8926484042661614799}
   m_UIPosition: {x: 748, y: 704}
   m_UICollapsed: 0

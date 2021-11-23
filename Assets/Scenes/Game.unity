@@ -344,7 +344,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawningPortal: {fileID: 714103941}
   staticPortal: {fileID: 1205359362}
-  light: {fileID: 903946158}
+  lightPortal: {fileID: 903946158}
   lightIntensity: 50
   portalRadius: 7
   minAngularSpeed: 10
