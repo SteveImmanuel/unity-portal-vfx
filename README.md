@@ -7,4 +7,4 @@ Implemented using Unity 2020.3.4f1.
 </div>
 <br>
 
-Checkout full tutorial and detailed explanations <a href=https://hackmd.io/JiCQ7asoR2mKblKYrXFfgg>here</a>.
+Checkout full tutorial and detailed explanations <a href=https://steveimm.id/posts/portal-vfx/>here</a>.
